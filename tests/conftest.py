@@ -19,14 +19,14 @@ TEST_PROVIDERS_JSON = json.dumps(
 
 DEFAULT_TEST_DB_URL = "mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui_test"
 TEST_DB_URL = os.getenv("TEST_DB_URL", DEFAULT_TEST_DB_URL)
-os.environ["DB_URL"] = TEST_DB_URL
+os.environ["DATABASE_URL"] = TEST_DB_URL
 os.environ.setdefault("OPENAI_API_KEY", "test")
 
 from app.core.config import settings
 from app.core.providers import reset_provider_registry
 from app.db.init_db import init_db
 
-settings.DB_URL = TEST_DB_URL
+settings.DATABASE_URL = TEST_DB_URL
 
 
 def _ensure_mysql_database(url: str) -> None:

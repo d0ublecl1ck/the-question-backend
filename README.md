@@ -12,13 +12,18 @@ uv sync
 cp .env.example .env
 ```
 
-`.env` 中 `CORS_ORIGINS` 必须是 JSON 数组，例如：
+`.env` 最小配置示例：
 
 ```
-CORS_ORIGINS=["http://localhost:5174","http://127.0.0.1:5174"]
+ENV=development
+DEBUG=false
+DATABASE_URL=mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui
+SECRET_KEY=change-me
+OPENAI_API_KEY=
+MINIMAX_API_KEY=
 ```
 
-请确保本地或 Docker 内的 MySQL 已启动，并将 `.env` 中的 `DB_URL` 指向 MySQL。
+请确保本地或 Docker 内的 MySQL 已启动，并将 `.env` 中的 `DATABASE_URL` 指向 MySQL。
 
 启动：
 
