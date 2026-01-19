@@ -1,4 +1,5 @@
 import json
+from pathlib import Path
 
 from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
@@ -39,7 +40,6 @@ class Settings(BaseSettings):
     DATABASE_URL: str = 'mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui'
     LOG_LEVEL: str = 'INFO'
     CORS_ORIGINS: list[str] = ['*']
-    AI_DEBUG_LOG_PATH: str = 'reports/ai-debug.jsonl'
 
     SECRET_KEY: str = 'change-me'
     ALGORITHM: str = 'HS256'
@@ -61,5 +61,7 @@ class Settings(BaseSettings):
             return [item.strip() for item in value.split(',') if item.strip()]
         return value
 
+
+AI_DEBUG_LOG_PATH: Path = Path('reports/ai-debug.jsonl')
 
 settings = Settings()

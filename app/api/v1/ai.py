@@ -9,6 +9,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from fastapi.responses import StreamingResponse
 from sqlmodel import Session
 
+from app.core import config
 from app.core.config import settings
 from app.core.providers import available_models, is_model_available
 from app.db.session import engine, get_session
@@ -33,8 +34,12 @@ from app.services.ai_skill_draft_suggestion import maybe_create_skill_draft_sugg
 router = APIRouter(prefix='/ai', tags=['ai'])
 
 
+def _ai_debug_enabled() -> bool:
+    return settings.ENV.lower() != 'production'
+
+
 def _resolve_debug_log_path() -> Path:
-    configured = Path(settings.AI_DEBUG_LOG_PATH)
+    configured = Path(config.AI_DEBUG_LOG_PATH)
     if configured.is_absolute():
         return configured
     repo_root = Path(__file__).resolve().parents[3]
@@ -42,6 +47,8 @@ def _resolve_debug_log_path() -> Path:
 
 
 def _append_ai_debug_record(record: dict) -> None:
+    if not _ai_debug_enabled():
+        return
     path = _resolve_debug_log_path()
     try:
         path.parent.mkdir(parents=True, exist_ok=True)
@@ -104,26 +111,27 @@ async def stream_chat(
             ensure_ascii=False,
         )
     )
-    _append_ai_debug_record(
-        {
-            'event': 'ai.chat.request',
-            'session_id': payload.session_id,
-            'user_id': user.id,
-            'model': payload.model,
-            'messages': messages,
-            'chat_messages': [
-                {
-                    'id': message.id,
-                    'role': message.role.value if hasattr(message.role, 'value') else message.role,
-                    'content': message.content,
-                    'skill_id': message.skill_id,
-                    'created_at': message.created_at.isoformat() if hasattr(message, 'created_at') else None,
-                }
-                for message in history
-            ],
-            'created_at': datetime.now(timezone.utc).isoformat(),
-        }
-    )
+    if _ai_debug_enabled():
+        _append_ai_debug_record(
+            {
+                'event': 'ai.chat.request',
+                'session_id': payload.session_id,
+                'user_id': user.id,
+                'model': payload.model,
+                'messages': messages,
+                'chat_messages': [
+                    {
+                        'id': message.id,
+                        'role': message.role.value if hasattr(message.role, 'value') else message.role,
+                        'content': message.content,
+                        'skill_id': message.skill_id,
+                        'created_at': message.created_at.isoformat() if hasattr(message, 'created_at') else None,
+                    }
+                    for message in history
+                ],
+                'created_at': datetime.now(timezone.utc).isoformat(),
+            }
+        )
 
     trimmed_history = trim_latest_user_message(
         history,
@@ -170,17 +178,18 @@ async def stream_chat(
                         record = get_message(background_session, assistant_record.id)
                         if record:
                             update_message_content(background_session, record, content)
-                    _append_ai_debug_record(
-                        {
-                            'event': 'ai.chat.response',
-                            'session_id': payload.session_id,
-                            'user_id': user.id,
-                            'model': payload.model,
-                            'message_id': assistant_record.id,
-                            'content': content,
-                            'created_at': datetime.now(timezone.utc).isoformat(),
-                        }
-                    )
+                    if _ai_debug_enabled():
+                        _append_ai_debug_record(
+                            {
+                                'event': 'ai.chat.response',
+                                'session_id': payload.session_id,
+                                'user_id': user.id,
+                                'model': payload.model,
+                                'message_id': assistant_record.id,
+                                'content': content,
+                                'created_at': datetime.now(timezone.utc).isoformat(),
+                            }
+                        )
                     suggestion_task = asyncio.create_task(
                         maybe_create_skill_suggestion(
                             deps=deps,
