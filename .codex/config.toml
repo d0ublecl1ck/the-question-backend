@@ -1,0 +1,6 @@
+[mcp_servers]
+
+[mcp_servers.neon-remote]
+name = "Neon Remote MCP"
+url = "https://mcp.neon.tech/sse"
+auth = "oauth"
