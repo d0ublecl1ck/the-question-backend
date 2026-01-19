@@ -33,10 +33,11 @@ def _parse_env_line(line: str) -> tuple[str, str] | None:
     return key, value
 
 
-def get_env_value(key: str) -> str | None:
-    if key in os.environ:
-        value = os.getenv(key)
-        return value if value else None
+def _env_file_exists() -> bool:
+    return any(path.exists() for path in _iter_env_files())
+
+
+def _get_from_env_files(key: str) -> str | None:
     for path in _iter_env_files():
         if not path.exists():
             continue
@@ -49,6 +50,13 @@ def get_env_value(key: str) -> str | None:
             if not parsed:
                 continue
             parsed_key, parsed_value = parsed
-            if parsed_key == key and parsed_value:
-                return parsed_value
+            if parsed_key == key:
+                return parsed_value or None
     return None
+
+
+def get_env_value(key: str) -> str | None:
+    if _env_file_exists():
+        return _get_from_env_files(key)
+    value = os.getenv(key)
+    return value if value else None
