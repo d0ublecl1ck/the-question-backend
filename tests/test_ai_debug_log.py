@@ -1,19 +1,26 @@
 import json
 
 from app.api.v1.ai import _append_ai_debug_record
+from app.core import config
 from app.core.config import settings
 
 
-def test_append_ai_debug_record_writes_jsonl(tmp_path):
-    previous = settings.AI_DEBUG_LOG_PATH
+def test_append_ai_debug_record_writes_jsonl(tmp_path, monkeypatch):
     log_path = tmp_path / 'ai-debug.jsonl'
-    settings.AI_DEBUG_LOG_PATH = str(log_path)
-    try:
-        record = {"event": "test", "messages": [{"role": "user", "content": "hi"}]}
-        _append_ai_debug_record(record)
-        content = log_path.read_text(encoding='utf-8').strip()
-        payload = json.loads(content)
-        assert payload["event"] == "test"
-        assert payload["messages"][0]["content"] == "hi"
-    finally:
-        settings.AI_DEBUG_LOG_PATH = previous
+    monkeypatch.setattr(config, "AI_DEBUG_LOG_PATH", log_path)
+    monkeypatch.setattr(settings, "ENV", "development")
+    record = {"event": "test", "messages": [{"role": "user", "content": "hi"}]}
+    _append_ai_debug_record(record)
+    content = log_path.read_text(encoding='utf-8').strip()
+    payload = json.loads(content)
+    assert payload["event"] == "test"
+    assert payload["messages"][0]["content"] == "hi"
+
+
+def test_append_ai_debug_record_skips_in_production(tmp_path, monkeypatch):
+    log_path = tmp_path / 'ai-debug.jsonl'
+    monkeypatch.setattr(config, "AI_DEBUG_LOG_PATH", log_path)
+    monkeypatch.setattr(settings, "ENV", "production")
+    record = {"event": "test", "messages": [{"role": "user", "content": "hi"}]}
+    _append_ai_debug_record(record)
+    assert not log_path.exists()
