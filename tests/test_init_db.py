@@ -14,3 +14,20 @@ def test_init_db_creates_tables_for_sqlite_in_production(monkeypatch):
 
     inspector = inspect(engine)
     assert "users" in inspector.get_table_names()
+
+
+def test_init_db_creates_tables_when_auto_create_enabled(monkeypatch):
+    engine = create_engine("sqlite:///:memory:", connect_args={"check_same_thread": False})
+    monkeypatch.setattr(init_module, "engine", engine)
+    monkeypatch.setattr(config_module.settings, "ENV", "production")
+    monkeypatch.setattr(
+        config_module.settings,
+        "DATABASE_URL",
+        "mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui",
+    )
+    monkeypatch.setattr(config_module.settings, "AUTO_CREATE_TABLES", True)
+
+    init_module.init_db(drop_all=True)
+
+    inspector = inspect(engine)
+    assert "users" in inspector.get_table_names()

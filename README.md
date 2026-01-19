@@ -33,6 +33,19 @@ uv run uvicorn app.main:app --reload
 
 访问：`http://127.0.0.1:8000`
 
+
+## Docker 一键启动
+
+```bash
+# 构建并启动
+OPENAI_API_KEY=your-key MINIMAX_API_KEY=your-key   docker compose up -d --build
+```
+
+- 服务启动后访问：`http://127.0.0.1:8000`
+- 数据库默认账号：`wendui` / `wendui`，库名：`wendui`
+- 生产部署请务必修改 `SECRET_KEY`（在 `docker-compose.yml` 的 `api.environment` 中）
+- 启动时会执行 `alembic upgrade head`，自动建表/迁移
+
 ## 运行测试
 
 ```bash

@@ -45,6 +45,7 @@ class Settings(BaseSettings):
     ALGORITHM: str = 'HS256'
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 7
+    AUTO_CREATE_TABLES: bool = False
 
     SKILL_CONTENT_MAX_LEN: int = 20000
     PROVIDERS: str = DEFAULT_PROVIDERS_JSON
