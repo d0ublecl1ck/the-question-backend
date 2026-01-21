@@ -1,0 +1,12 @@
+.git
+.context
+.venv
+.vercel
+.pytest_cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.DS_Store
+.env
+.env.*
