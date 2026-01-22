@@ -37,7 +37,7 @@ class Settings(BaseSettings):
     ENV: str = 'development'
     DEBUG: bool = False
 
-    DATABASE_URL: str = 'mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui'
+    DATABASE_URL: str = 'mysql+pymysql://backend:6W2%2BqkF%2BIU%24DX0_@the-question.rwlb.rds.aliyuncs.com:3306/the-question?charset=utf8mb4'
     LOG_LEVEL: str = 'INFO'
     CORS_ORIGINS: list[str] = ['*']
 

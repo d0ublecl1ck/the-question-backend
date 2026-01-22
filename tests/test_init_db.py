@@ -23,7 +23,7 @@ def test_init_db_creates_tables_when_auto_create_enabled(monkeypatch):
     monkeypatch.setattr(
         config_module.settings,
         "DATABASE_URL",
-        "mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui",
+        "mysql+pymysql://backend:6W2%2BqkF%2BIU%24DX0_@the-question.rwlb.rds.aliyuncs.com:3306/the-question?charset=utf8mb4",
     )
     monkeypatch.setattr(config_module.settings, "AUTO_CREATE_TABLES", True)
 

@@ -17,7 +17,7 @@ cp .env.example .env
 ```
 ENV=development
 DEBUG=false
-DATABASE_URL=mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui
+DATABASE_URL=mysql+pymysql://backend:6W2%2BqkF%2BIU%24DX0_@the-question.rwlb.rds.aliyuncs.com:3306/the-question?charset=utf8mb4
 SECRET_KEY=change-me
 OPENAI_API_KEY=
 MINIMAX_API_KEY=
@@ -42,7 +42,7 @@ OPENAI_API_KEY=your-key MINIMAX_API_KEY=your-key   docker compose up -d --build
 ```
 
 - 服务启动后访问：`http://127.0.0.1:8000`
-- 数据库默认账号：`wendui` / `wendui`，库名：`wendui`
+- 数据库账号：`backend` / `6W2+qkF+IU$DX0_`，库名：`the-question`
 - 生产部署请务必修改 `SECRET_KEY`（在 `docker-compose.yml` 的 `api.environment` 中）
 - 启动时会执行 `alembic upgrade head`，自动建表/迁移
 
