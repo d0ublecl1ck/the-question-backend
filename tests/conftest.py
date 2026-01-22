@@ -17,7 +17,10 @@ TEST_PROVIDERS_JSON = json.dumps(
     ]
 )
 
-DEFAULT_TEST_DB_URL = "mysql+pymysql://wendui:wendui@127.0.0.1:3306/wendui_test"
+DEFAULT_TEST_DB_URL = (
+    "mysql+pymysql://backend:6W2%2BqkF%2BIU%24DX0_@127.0.0.1:3306/the-question-test"
+    "?charset=utf8mb4"
+)
 TEST_DB_URL = os.getenv("TEST_DB_URL", DEFAULT_TEST_DB_URL)
 os.environ["DATABASE_URL"] = TEST_DB_URL
 os.environ.setdefault("OPENAI_API_KEY", "test")

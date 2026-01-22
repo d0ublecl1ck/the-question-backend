@@ -3,9 +3,9 @@ services:
     image: mysql:8.0
     restart: unless-stopped
     environment:
-      MYSQL_DATABASE: wendui
-      MYSQL_USER: wendui
-      MYSQL_PASSWORD: wendui
+      MYSQL_DATABASE: the-question
+      MYSQL_USER: backend
+      MYSQL_PASSWORD: 6W2+qkF+IU$$DX0_
       MYSQL_ROOT_PASSWORD: root
     ports:
       - "3306:3306"
@@ -25,7 +25,7 @@ services:
         condition: service_healthy
     environment:
       ENV: production
-      DATABASE_URL: mysql+pymysql://wendui:wendui@db:3306/wendui
+      DATABASE_URL: "mysql+pymysql://backend:6W2%2BqkF%2BIU%24DX0_@the-question.rwlb.rds.aliyuncs.com:3306/the-question?charset=utf8mb4"
       SECRET_KEY: change-me
       AUTO_CREATE_TABLES: "true"
       OPENAI_API_KEY: ${OPENAI_API_KEY:-}
